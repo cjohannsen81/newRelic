@@ -11,7 +11,7 @@ Attributes
 
 Usage
 -----
-Just include `newRelic` in your node's `run_list`:
+Add the license key into the recipe per OS and then just include `newRelic` in your node's `run_list`:
 
 ```json
 {

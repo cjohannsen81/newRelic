@@ -2,7 +2,7 @@
 # Cookbook Name:: newRelic
 # Recipe:: default
 #
-# Copyright 2014, YOUR_COMPANY_NAME
+# Copyright 2014, Christian Johannsen
 #
 # All rights reserved - Do Not Redistribute
 #
@@ -11,16 +11,19 @@
 case node['platform_family']
 when 'windows'
   if node['kernel']['machine'] == 'x86_64'
+	# creates the remote file
 	remote_file "C:/chef/NewRelicServerMonitor_x64_3.1.17.0.msi" do
 	  source node['newRelic']['agent']['uri']
 	  action :create
 	end
+	# installs the package and add the license
 	windows_package "New Relic Monitoring" do
  	  source "C:/chef/NewRelicServerMonitor_x64_3.1.17.0.msi"
   	  installer_type :msi
   	  action :install
-  	  options "NR_LICENSE_KEY=fca354a023a28874174ae9490c44d169e33772f6"
+  	  options "NR_LICENSE_KEY=YOURLICENSE"
   	end
+	# starts the windows service
 	service "new relic service" do
   	  service_name "nrsvrmon"
   	  action :start
@@ -38,12 +41,15 @@ when 'rhel'
     	  source "/tmp/newrelic-repo-5-3.noarch.rpm"
     	  action :install
 	end
+	# installs the package from the package manager
 	package "newrelic-sysmond" do
 	  action [:install]
 	end
+	# configures the license
 	execute "newrelic-config" do
-	  command "nrsysmond-config --set license_key=fca354a023a28874174ae9490c44d169e33772f6"
+	  command "nrsysmond-config --set license_key=YOURLICENSE"
 	end
+	# starts the service
 	service "newrelic-sysmond" do
 	  action [ :enable, :start ]
 	end
