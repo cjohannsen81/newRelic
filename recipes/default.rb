@@ -18,10 +18,11 @@ when 'windows'
 	end
 	# installs the package and add the license
 	windows_package "New Relic Monitoring" do
- 	  source "C:/chef/NewRelicServerMonitor_x64_3.1.17.0.msi"
-  	  installer_type :msi
+ 	  #source "C:/chef/NewRelicServerMonitor_x64_3.1.17.0.msi"
+  	  source node['newRelic']['agent']['tempUri']
+	  installer_type :msi
   	  action :install
-  	  options "NR_LICENSE_KEY=YOURLICENSE"
+  	  options "NR_LICENSE_KEY=#{node['newRelic']['agent']['license']}"
   	end
 	# starts the windows service
 	service "new relic service" do
@@ -38,8 +39,9 @@ when 'rhel'
 	end
   	# adds the package to the manager
 	rpm_package "New Relic Monitoring" do
-    	  source "/tmp/newrelic-repo-5-3.noarch.rpm"
-    	  action :install
+    	  #source "/tmp/newrelic-repo-5-3.noarch.rpm"
+    	  source node['newRelic']['agent']['tempUri']
+	  action :install
 	end
 	# installs the package from the package manager
 	package "newrelic-sysmond" do
@@ -47,7 +49,7 @@ when 'rhel'
 	end
 	# configures the license
 	execute "newrelic-config" do
-	  command "nrsysmond-config --set license_key=YOURLICENSE"
+	  command "nrsysmond-config --set license_key=#{node['newRelic']['agent']['license']}"
 	end
 	# starts the service
 	service "newrelic-sysmond" do
